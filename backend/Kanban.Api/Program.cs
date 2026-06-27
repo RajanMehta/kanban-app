@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Kanban.Api.Data;
+using Kanban.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<KanbanDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
