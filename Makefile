@@ -34,3 +34,18 @@ test: ## Run backend tests
 
 clean: ## Remove build artifacts (bin/ obj/)
 	dotnet clean $(BACKEND)
+
+# Database (EF Core migrations)
+.PHONY: ef-tools migrate db-update db-reset
+ef-tools: ## Install the local dotnet-ef CLI tool (one-time)
+	cd $(BACKEND) && dotnet new tool-manifest --force && dotnet tool install dotnet-ef
+
+migrate: ## Create a migration: make migrate NAME=AddSomething
+	cd $(BACKEND) && dotnet ef migrations add $(NAME) --project Kanban.Api
+
+db-update: ## Apply pending migrations to the SQLite database
+	cd $(BACKEND) && dotnet ef database update --project Kanban.Api
+
+db-reset: ## Delete the local SQLite db and re-apply migrations
+	rm -f $(BACKEND)/Kanban.Api/kanban.db
+	$(MAKE) db-update

@@ -1,6 +1,12 @@
+using Kanban.Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<KanbanDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddControllers();
 
