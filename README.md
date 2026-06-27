@@ -77,6 +77,12 @@ Base URL: `http://localhost:5050`
 - `title` is required (1–200 chars); `description` is optional (≤ 2000 chars).
 - `id`, `createdAt`, and `updatedAt` are server-managed and ignored on input.
 
+### Explore the API (Swagger)
+
+With the API running, open **http://localhost:5050/swagger** for interactive,
+auto-generated documentation with a "Try it out" button for every endpoint. (Available in
+the Development environment only.)
+
 ### Verify the API (Postman)
 
 1. Start the API: `make run`
@@ -84,6 +90,12 @@ Base URL: `http://localhost:5050`
 3. Run the collection top-to-bottom (or via the Collection Runner). It walks the full
    CRUD lifecycle plus the `400` (invalid body) and `404` (missing id) paths, capturing the
    created task's id into a variable so the requests chain automatically.
+
+### CORS
+
+The API only accepts browser requests from origins listed under `Cors:AllowedOrigins` in
+`appsettings.json` (default `http://localhost:5173`, the Vite dev server). Add your
+frontend's origin there if it changes.
 
 ## Make commands
 
