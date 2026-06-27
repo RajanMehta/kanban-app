@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "Kanban Task Board API",
+    "description": "CRUD verification for the .NET Kanban API. Run top-to-bottom: Create captures the new id into the {{taskId}} collection variable, which the later requests reuse.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5050", "type": "string" },
+    { "key": "taskId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Create Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 201 Created', () => pm.response.to.have.status(201));",
+              "const body = pm.response.json();",
+              "pm.test('has server-generated id', () => pm.expect(body.id).to.be.a('number'));",
+              "pm.test('status defaults/echoes correctly', () => pm.expect(body.status).to.eql('ToDo'));",
+              "pm.test('Location header points to the new task', () => pm.expect(pm.response.headers.get('Location')).to.include('/api/tasks/' + body.id));",
+              "pm.collectionVariables.set('taskId', body.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/tasks", "host": ["{{baseUrl}}"], "path": ["api", "tasks"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Write the README\",\n  \"description\": \"Document setup steps for backend and frontend\",\n  \"status\": \"ToDo\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Get All Tasks",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('body is an array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/tasks", "host": ["{{baseUrl}}"], "path": ["api", "tasks"] }
+      }
+    },
+    {
+      "name": "Get Task By Id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('id matches the created task', () => pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('taskId'))));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["api", "tasks", "{{taskId}}"] }
+      }
+    },
+    {
+      "name": "Update Task (move to In Progress)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 200 OK', () => pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test('status updated to InProgress', () => pm.expect(body.status).to.eql('InProgress'));",
+              "pm.test('updatedAt changed from createdAt', () => pm.expect(body.updatedAt).to.not.eql(body.createdAt));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["api", "tasks", "{{taskId}}"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Write the README\",\n  \"description\": \"Document setup steps for backend and frontend\",\n  \"status\": \"InProgress\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Create Task - invalid (missing title)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 400 Bad Request', () => pm.response.to.have.status(400));",
+              "pm.test('reports a validation error for Title', () => pm.expect(JSON.stringify(pm.response.json())).to.include('Title'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/tasks", "host": ["{{baseUrl}}"], "path": ["api", "tasks"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"This body has no title and should be rejected\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Task",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 204 No Content', () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["api", "tasks", "{{taskId}}"] }
+      }
+    },
+    {
+      "name": "Get Task By Id - after delete (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('returns 404 Not Found', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["api", "tasks", "{{taskId}}"] }
+      }
+    }
+  ]
+}
