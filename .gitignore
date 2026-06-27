@@ -1,0 +1,33 @@
+# ---------- .NET ----------
+# Build output (compiled binaries + intermediate files). Analogous to __pycache__/*.pyc.
+bin/
+obj/
+# User-specific IDE/solution state
+*.user
+.vs/
+
+# ---------- SQLite ----------
+# The local database file. We never commit data; the schema lives in migrations.
+*.db
+*.db-shm
+*.db-wal
+
+# ---------- Node / Frontend ----------
+node_modules/
+dist/
+dist-ssr/
+*.local
+# Vite / build caches
+.vite/
+
+# ---------- Env / secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- OS / editor ----------
+.DS_Store
+.idea/
+*.swp
+
+CLAUDE.md
