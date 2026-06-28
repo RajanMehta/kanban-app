@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useDraggable } from '@dnd-kit/core';
 import { useTasks } from '../state/TasksContext';
 import type { Task } from '../types/task';
 import { EditTaskForm } from './EditTaskForm';
@@ -12,6 +13,19 @@ export function Card({ task }: CardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: task.id,
+    disabled: isEditing,
+  });
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: isDragging ? 0.5 : undefined,
+        zIndex: isDragging ? 10 : undefined,
+      }
+    : undefined;
 
   async function handleDelete() {
     if (!window.confirm(`Delete "${task.title}"?`)) {
@@ -38,7 +52,13 @@ export function Card({ task }: CardProps) {
   }
 
   return (
-    <article className="card">
+    <article
+      ref={setNodeRef}
+      style={style}
+      className="card card-draggable"
+      {...attributes}
+      {...listeners}
+    >
       <div className="card-row">
         <div className="card-main">
           <h3 className="card-title">{task.title}</h3>

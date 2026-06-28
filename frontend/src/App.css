@@ -20,6 +20,13 @@
   background: #ebeef3;
   border-radius: 10px;
   padding: 12px;
+  transition: background 0.15s, outline-color 0.15s;
+  outline: 2px dashed transparent;
+}
+
+.column-over {
+  background: #e0e7ff;
+  outline-color: #2563eb;
 }
 
 .column-header {
@@ -52,6 +59,15 @@
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.card-draggable {
+  cursor: grab;
+  touch-action: none;
+}
+
+.card-draggable:active {
+  cursor: grabbing;
 }
 
 .card-row {
