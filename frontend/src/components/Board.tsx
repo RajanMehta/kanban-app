@@ -6,7 +6,7 @@ import type { Status } from '../types/task';
 import { Column } from './Column';
 
 export function Board() {
-  const { tasks, loading, error, moveTask } = useTasks();
+  const { tasks, loading, error, moveTask, refresh } = useTasks();
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -33,7 +33,14 @@ export function Board() {
   }
 
   if (error) {
-    return <p className="status-msg error">Failed to load tasks: {error}</p>;
+    return (
+      <div className="status-msg error" role="alert">
+        <p>Failed to load tasks: {error}</p>
+        <button className="btn" type="button" onClick={() => void refresh()}>
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (

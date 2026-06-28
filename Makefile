@@ -17,7 +17,7 @@ help: ## Show this help (list of targets)
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
 # Backend (.NET)
-.PHONY: restore build run watch test clean
+.PHONY: restore build run watch test clean format format-check
 restore: ## Restore NuGet packages (like `pip install -r`)
 	dotnet restore $(BACKEND)
 
@@ -35,6 +35,12 @@ test: ## Run backend tests
 
 clean: ## Remove build artifacts (bin/ obj/)
 	dotnet clean $(BACKEND)
+
+format: ## Format backend code (like Black for C#)
+	dotnet format $(API)
+
+format-check: ## Check backend formatting without changing files
+	dotnet format $(API) --verify-no-changes
 
 # Database (EF Core migrations)
 .PHONY: ef-tools migrate db-update db-reset
