@@ -1,12 +1,14 @@
-import type { Task } from '../types/task';
+import type { Status, Task } from '../types/task';
+import { AddTaskForm } from './AddTaskForm';
 import { Card } from './Card';
 
 interface ColumnProps {
   title: string;
+  status: Status;
   tasks: Task[];
 }
 
-export function Column({ title, tasks }: ColumnProps) {
+export function Column({ title, status, tasks }: ColumnProps) {
   return (
     <section className="column">
       <header className="column-header">
@@ -20,6 +22,7 @@ export function Column({ title, tasks }: ColumnProps) {
           tasks.map((task) => <Card key={task.id} task={task} />)
         )}
       </div>
+      <AddTaskForm status={status} />
     </section>
   );
 }

@@ -19,6 +19,7 @@ export function Board() {
         <Column
           key={column.status}
           title={column.title}
+          status={column.status}
           tasks={tasks.filter((task) => task.status === column.status)}
         />
       ))}
