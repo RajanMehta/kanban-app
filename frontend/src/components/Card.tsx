@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTasks } from '../state/TasksContext';
 import type { Task } from '../types/task';
+import { EditTaskForm } from './EditTaskForm';
 
 interface CardProps {
   task: Task;
@@ -8,6 +9,7 @@ interface CardProps {
 
 export function Card({ task }: CardProps) {
   const { deleteTask } = useTasks();
+  const [isEditing, setIsEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +29,14 @@ export function Card({ task }: CardProps) {
     }
   }
 
+  if (isEditing) {
+    return (
+      <article className="card">
+        <EditTaskForm task={task} onClose={() => setIsEditing(false)} />
+      </article>
+    );
+  }
+
   return (
     <article className="card">
       <div className="card-row">
@@ -34,16 +44,27 @@ export function Card({ task }: CardProps) {
           <h3 className="card-title">{task.title}</h3>
           {task.description && <p className="card-desc">{task.description}</p>}
         </div>
-        <button
-          className="card-delete"
-          type="button"
-          onClick={handleDelete}
-          disabled={deleting}
-          aria-label={`Delete ${task.title}`}
-          title="Delete task"
-        >
-          ×
-        </button>
+        <div className="card-actions">
+          <button
+            className="card-edit"
+            type="button"
+            onClick={() => setIsEditing(true)}
+            aria-label={`Edit ${task.title}`}
+            title="Edit task"
+          >
+            ✎
+          </button>
+          <button
+            className="card-delete"
+            type="button"
+            onClick={handleDelete}
+            disabled={deleting}
+            aria-label={`Delete ${task.title}`}
+            title="Delete task"
+          >
+            ×
+          </button>
+        </div>
       </div>
       {error && <p className="form-error">{error}</p>}
     </article>
