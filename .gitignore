@@ -30,4 +30,6 @@ dist-ssr/
 .idea/
 *.swp
 
+# Personal notes (not part of the submission)
 CLAUDE.md
+NOTES.md

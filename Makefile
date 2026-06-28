@@ -1,8 +1,9 @@
 #  Run `make` (or `make help`) to see every available target.
 
 # Paths
-BACKEND := backend
-API     := backend/Kanban.Api/Kanban.Api.csproj
+BACKEND  := backend
+API      := backend/Kanban.Api/Kanban.Api.csproj
+FRONTEND := frontend
 
 # Default migration name; override like: make migrate NAME=AddDueDate
 NAME ?= Migration
@@ -49,3 +50,21 @@ db-update: ## Apply pending migrations to the SQLite database
 db-reset: ## Delete the local SQLite db and re-apply migrations
 	rm -f $(BACKEND)/Kanban.Api/kanban.db
 	$(MAKE) db-update
+
+# Frontend (React + TypeScript via Vite)
+# Note: requires the LTS Node active in your shell first (cd frontend && nvm use).
+.PHONY: fe-install fe-dev fe-build fe-lint fe-preview
+fe-install: ## Install frontend dependencies (npm install)
+	cd $(FRONTEND) && npm install
+
+fe-dev: ## Start the Vite dev server on http://localhost:5173
+	cd $(FRONTEND) && npm run dev
+
+fe-build: ## Type-check and build the production bundle
+	cd $(FRONTEND) && npm run build
+
+fe-lint: ## Lint the frontend with ESLint
+	cd $(FRONTEND) && npm run lint
+
+fe-preview: ## Preview the production build locally
+	cd $(FRONTEND) && npm run preview
