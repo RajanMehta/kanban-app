@@ -5,22 +5,36 @@ create, edit, delete, and drag-and-drop between columns.
 
 - **Backend:** .NET 10 Web API, EF Core, SQLite
 - **Frontend:** React + TypeScript (Vite)
-- **Containerization:** Docker + docker-compose — _planned_
+- **Containerization:** Docker + docker-compose
 
-## Prerequisites
+## Quick start (Docker)
+
+The fastest way to try the app. No local .NET or Node needed, just
+[Git](https://git-scm.com/) and [Docker](https://www.docker.com/):
+
+```bash
+git clone <your-repo-url> kanban-app
+cd kanban-app
+make docker-build   # build the backend and frontend images
+make docker-up      # start both services in the background
+```
+
+- **App:** http://localhost:3000
+- **API:** http://localhost:5050
+
+The backend applies its database migrations on startup and persists SQLite data in a
+named Docker volume (`kanban-data`), so tasks survive restarts. Tail logs with
+`make docker-logs`, and stop everything with `make docker-down`.
+
+## Local development
+
+To run the services directly on your machine (with hot reload), you'll need:
 
 - [Git](https://git-scm.com/)
 - [.NET SDK 10+](https://dotnet.microsoft.com/download)
 - [Node.js 20+](https://nodejs.org/) (LTS recommended). If you use
   [nvm](https://github.com/nvm-sh/nvm), the frontend ships an `.nvmrc` so `nvm use` picks
   the right version.
-
-## Getting started
-
-```bash
-git clone <your-repo-url> kanban-app
-cd kanban-app
-```
 
 This repo uses a `Makefile` as the command runner. Run **`make help`** at any time to see
 all available targets.
@@ -53,7 +67,7 @@ Open **http://localhost:5173**. Both servers need to be running together; the ba
 CORS policy already allows the Vite origin (`http://localhost:5173`).
 
 > The same frontend tasks are wrapped as `make` targets (`make fe-dev`, `make fe-build`,
-> `make fe-lint`) — run them from the repo root once the right Node version is active.
+> `make fe-lint`). Run them from the repo root once the right Node version is active.
 
 ## API reference
 

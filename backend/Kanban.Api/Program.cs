@@ -43,6 +43,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Apply any pending EF Core migrations on startup so the database schema
+// exists without a manual step (important inside a fresh container).
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<KanbanDbContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 

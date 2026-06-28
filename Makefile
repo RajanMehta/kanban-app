@@ -12,7 +12,7 @@ NAME ?= Migration
 
 .PHONY: help
 help: ## Show this help (list of targets)
-	@echo "Kanban Task Board — make targets:"
+	@echo "Kanban Task Board make targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
@@ -74,3 +74,17 @@ fe-lint: ## Lint the frontend with ESLint
 
 fe-preview: ## Preview the production build locally
 	cd $(FRONTEND) && npm run preview
+
+# Docker (full stack via docker compose)
+.PHONY: docker-build docker-up docker-down docker-logs
+docker-build: ## Build the backend and frontend images
+	docker compose build
+
+docker-up: ## Start the full stack (frontend http://localhost:3000)
+	docker compose up -d
+
+docker-down: ## Stop the stack and remove its containers
+	docker compose down
+
+docker-logs: ## Tail logs from all services
+	docker compose logs -f
